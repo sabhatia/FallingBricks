@@ -30,7 +30,7 @@ while not IS_GAME_OVER:
         if game_event.type == pygame.KEYDOWN:
             print("KEY DOWN")
             if game_event.key == pygame.K_LEFT:
-                print("KEY_LEFT")
+                print("KEY_LEFT-ANSH")
             elif game_event.key == pygame.K_RIGHT:
                 print("KEY_RIGHT")
 
