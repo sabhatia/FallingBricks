@@ -37,6 +37,16 @@ while not IS_GAME_OVER:
                 HORIZ_STEP = VERTICAL_STEP = 0
                 HORIZ_STEP -= STEP_SIZE 
 
+            elif game_event.key == pygame.K_DOWN:
+                print("KEY: Right")
+                HORIZ_STEP = VERTICAL_STEP = 0
+                VERTICAL_STEP += STEP_SIZE 
+            
+            elif game_event.key == pygame.K_UP:
+                print("KEY: Right")
+                HORIZ_STEP = VERTICAL_STEP = 0
+                VERTICAL_STEP -= STEP_SIZE 
+
             # Compute the new rect co-ordinates
             RECT_Y += VERTICAL_STEP
             RECT_X -= HORIZ_STEP
