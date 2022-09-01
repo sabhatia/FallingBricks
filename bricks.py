@@ -1,4 +1,5 @@
 from cmath import rect
+from curses import COLOR_BLACK
 import pygame
 import sys
 
@@ -10,16 +11,27 @@ SCREEN_HEIGHT = 600
 
 IS_GAME_OVER = False
 
-# Rectangle Parameters
-COLOR_RED = (255,0,0)
-RECT_INIT_X = RECT_INIT_Y = 400
+# Common Constats: Player and Enemy
 RECT_SIDE = 50
 RECT_SIZE = (RECT_SIDE, RECT_SIDE)
 STEP_SIZE = RECT_SIDE//2
 
+# Player Rectangle:
+COLOR_RED = (255,0,0)
+RECT_INIT_X = RECT_INIT_Y = 400
+
+# Enemy Rectangle
+COLOR_BLUE = (0,0,255)
+ENMY_RECT_INIT_X = 100
+ENMY_RECT_INIT_Y = 0
+
+# Player Rectangle
 rect_pos = (RECT_INIT_X, RECT_INIT_Y)
 x = rect_pos[0]
 y = rect_pos[1]
+
+# E
+enem_rect_pos = (ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -63,6 +75,9 @@ while not IS_GAME_OVER:
     # Draw a rectangle
     PLAYER_RECTANGLE = pygame.Rect(rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_RED, PLAYER_RECTANGLE)
+
+    ENMY_RECTANGLE = pygame.Rect(enem_rect_pos, RECT_SIZE)
+    pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
 
     # Refresh the screen
     pygame.display.update()
