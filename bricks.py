@@ -1,13 +1,16 @@
 from cmath import rect
-from curses import COLOR_BLACK
 import pygame
 import sys
+import random
 
 pygame.init()
 
 # Screen Variables
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+
+COLOR_RED = (255,0,0)
+COLOR_BLUE = (0,0,255)
 
 IS_GAME_OVER = False
 
@@ -17,12 +20,10 @@ RECT_SIZE = (RECT_SIDE, RECT_SIDE)
 STEP_SIZE = RECT_SIDE//2
 
 # Player Rectangle:
-COLOR_RED = (255,0,0)
 RECT_INIT_X = RECT_INIT_Y = 400
 
 # Enemy Rectangle
-COLOR_BLUE = (0,0,255)
-ENMY_RECT_INIT_X = 100
+ENMY_RECT_INIT_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
 ENMY_RECT_INIT_Y = 0
 
 # Player Rectangle
@@ -30,8 +31,8 @@ rect_pos = (RECT_INIT_X, RECT_INIT_Y)
 x = rect_pos[0]
 y = rect_pos[1]
 
-# E
-enem_rect_pos = (ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y)
+# Enemy Rectangle
+enmy_rect_pos = (ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -68,15 +69,18 @@ while not IS_GAME_OVER:
             x += x_delta
             y += y_delta
             rect_pos = (x, y)
-            print(rect_pos)
 
     screen.fill((0,0,0))
+
+    # Print debugs
+    print('Player:', rect_pos)
+    print('Enemy:', enmy_rect_pos)
 
     # Draw a rectangle
     PLAYER_RECTANGLE = pygame.Rect(rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_RED, PLAYER_RECTANGLE)
 
-    ENMY_RECTANGLE = pygame.Rect(enem_rect_pos, RECT_SIZE)
+    ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
 
     # Refresh the screen
