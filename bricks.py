@@ -8,6 +8,7 @@ pygame.init()
 # Screen Variables
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+FRAME_RATE = 30
 
 COLOR_RED = (255,0,0)
 COLOR_BLUE = (0,0,255)
@@ -25,6 +26,7 @@ RECT_INIT_X = RECT_INIT_Y = 400
 # Enemy Rectangle
 ENMY_RECT_INIT_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
 ENMY_RECT_INIT_Y = 0
+ENMY_DROP_RATE = 25
 
 # Player Rectangle
 rect_pos = (RECT_INIT_X, RECT_INIT_Y)
@@ -33,7 +35,11 @@ y = rect_pos[1]
 
 # Enemy Rectangle
 enmy_rect_pos = (ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y)
+enmy_x = enmy_rect_pos[0]
+enmy_y = enmy_rect_pos[1]
 
+# Clock
+clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 while not IS_GAME_OVER:
@@ -70,18 +76,22 @@ while not IS_GAME_OVER:
             y += y_delta
             rect_pos = (x, y)
 
+    # Compute Enemy rectangle 
+    enmy_y += ENMY_DROP_RATE
+    enmy_rect_pos = (enmy_x, enmy_y)
     screen.fill((0,0,0))
 
     # Print debugs
     print('Player:', rect_pos)
     print('Enemy:', enmy_rect_pos)
 
-    # Draw a rectangle
+    # Draw the rectangles
     PLAYER_RECTANGLE = pygame.Rect(rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_RED, PLAYER_RECTANGLE)
 
     ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
 
+    clock.tick(FRAME_RATE)
     # Refresh the screen
     pygame.display.update()
