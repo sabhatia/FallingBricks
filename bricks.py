@@ -78,6 +78,7 @@ while not IS_GAME_OVER:
 
     # Compute Enemy rectangle 
     enmy_y += ENMY_DROP_RATE
+    enmy_y %= SCREEN_HEIGHT
     enmy_rect_pos = (enmy_x, enmy_y)
     screen.fill((0,0,0))
 
