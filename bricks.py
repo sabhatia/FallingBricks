@@ -1,4 +1,5 @@
 from cmath import rect
+from re import T
 import pygame
 import sys
 import random
@@ -42,6 +43,20 @@ enmy_y = enmy_rect_pos[1]
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+def is_collision_detected(player_block, enemy_block, BLOCK_SIZE):
+    player_X = player_block[0]
+    enemy_X = enemy_block[0]
+
+    player_Y = player_block[1]
+    enemy_Y = enemy_block[1]
+
+    if (enemy_X > player_X - BLOCK_SIZE) and (enemy_X < player_X + BLOCK_SIZE):
+        if (enemy_Y > player_Y - BLOCK_SIZE) and (enemy_Y < player_Y + BLOCK_SIZE):
+            print("Collison detected. Enemy:", enemy_block, "Player:", player_block)
+            return True
+    
+    return False
+
 while not IS_GAME_OVER:
     for game_event in pygame.event.get():
 
@@ -76,13 +91,6 @@ while not IS_GAME_OVER:
             y += y_delta
             rect_pos = (x, y)
 
-    # Compute Enemy rectangle 
-    enmy_y += ENMY_DROP_RATE
-    if enmy_y >= SCREEN_HEIGHT:
-        # move the enemy to a new horizontal position
-        enmy_x = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
-        enmy_y %= SCREEN_HEIGHT
-    enmy_rect_pos = (enmy_x, enmy_y)
     screen.fill((0,0,0))
 
     # Print debugs
@@ -95,7 +103,23 @@ while not IS_GAME_OVER:
 
     ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
+    
+    if is_collision_detected(rect_pos, enmy_rect_pos, RECT_SIDE):
+        print("GAME OVER!")
+        IS_GAME_OVER = True
+        continue
 
-    clock.tick(FRAME_RATE)
     # Refresh the screen
+    clock.tick(FRAME_RATE)
     pygame.display.update()
+
+    # Re-Compute Enemy rectangle 
+    enmy_y += ENMY_DROP_RATE
+    if enmy_y >= SCREEN_HEIGHT:
+        # move the enemy to a new horizontal position
+        enmy_x = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
+        enmy_y %= SCREEN_HEIGHT
+    enmy_rect_pos = (enmy_x, enmy_y)
+
+#end while
+sys.exit()
