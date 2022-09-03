@@ -43,6 +43,17 @@ enmy_y = enmy_rect_pos[1]
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+def update_enemy_pos(enemy_block):
+    enemy_X = enemy_block[0]
+    enemy_Y = enemy_block[1]
+
+    enemy_Y += ENMY_DROP_RATE
+    if enemy_Y >= SCREEN_HEIGHT:
+        # move the enemy to a new horizontal position
+        enemy_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
+        enemy_Y %= SCREEN_HEIGHT
+    return (enemy_X, enemy_Y)
+
 def is_collision_detected(player_block, enemy_block, BLOCK_SIZE):
     player_X = player_block[0]
     enemy_X = enemy_block[0]
@@ -113,13 +124,8 @@ while not IS_GAME_OVER:
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
-    # Re-Compute Enemy rectangle 
-    enmy_y += ENMY_DROP_RATE
-    if enmy_y >= SCREEN_HEIGHT:
-        # move the enemy to a new horizontal position
-        enmy_x = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
-        enmy_y %= SCREEN_HEIGHT
-    enmy_rect_pos = (enmy_x, enmy_y)
+    # Re-Compute Enemy rectangle
+    enmy_rect_pos = update_enemy_pos(enmy_rect_pos) 
 
 #end while
 sys.exit()
