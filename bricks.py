@@ -28,6 +28,7 @@ RECT_INIT_X = RECT_INIT_Y = 400
 ENMY_RECT_INIT_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
 ENMY_RECT_INIT_Y = 0
 ENMY_DROP_RATE = 25
+ENMY_COUNT = 5
 
 # Player Rectangle
 rect_pos = (RECT_INIT_X, RECT_INIT_Y)
@@ -38,10 +39,17 @@ y = rect_pos[1]
 enmy_rect_pos = (ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y)
 enmy_x = enmy_rect_pos[0]
 enmy_y = enmy_rect_pos[1]
+enemies = list()
 
 # Clock
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+
+def generate_enemies(enemy_army: list, total_enemies: int):
+    for enemy in range(0, total_enemies):
+        enemy_X = random.randint(0, SCREEN_HEIGHT - RECT_SIDE)
+        enemy_Y = ENMY_RECT_INIT_Y
+        enemy_army.append((enemy_X, enemy_Y))
 
 def update_enemy_pos(enemy_block):
     enemy_X = enemy_block[0]
@@ -67,6 +75,11 @@ def is_collision_detected(player_block, enemy_block, BLOCK_SIZE):
             return True
     
     return False
+
+# Generate multiple enemies
+generate_enemies(enemies, ENMY_COUNT)
+
+x_delta = y_delta = 0
 
 while not IS_GAME_OVER:
     for game_event in pygame.event.get():
@@ -112,20 +125,24 @@ while not IS_GAME_OVER:
     PLAYER_RECTANGLE = pygame.Rect(rect_pos, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_RED, PLAYER_RECTANGLE)
 
-    ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
-    pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
+    for enmy_rect_pos in enemies:
+        ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
+        pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
     
-    if is_collision_detected(rect_pos, enmy_rect_pos, RECT_SIDE):
-        print("GAME OVER!")
-        IS_GAME_OVER = True
-        continue
+    for enmy_rect_pos in enemies:
+        if is_collision_detected(rect_pos, enmy_rect_pos, RECT_SIDE):
+            print("GAME OVER!")
+            IS_GAME_OVER = True
+            break
 
     # Refresh the screen
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
     # Re-Compute Enemy rectangle
-    enmy_rect_pos = update_enemy_pos(enmy_rect_pos) 
+    for indx in range(0, len(enemies)):
+        print("Enemy[", indx, "] = ", enemies[indx])
+        enemies[indx] = update_enemy_pos(enemies[indx]) 
 
 #end while
 sys.exit()
