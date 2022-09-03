@@ -51,6 +51,10 @@ def generate_enemies(enemy_army: list, total_enemies: int):
         enemy_Y = ENMY_RECT_INIT_Y
         enemy_army.append((enemy_X, enemy_Y))
 
+def update_all_enemies(enemy_army):
+    for indx in range(0, len(enemy_army)):
+        enemy_army[indx] = update_enemy_pos(enemy_army[indx])
+
 def update_enemy_pos(enemy_block):
     enemy_X = enemy_block[0]
     enemy_Y = enemy_block[1]
@@ -62,7 +66,14 @@ def update_enemy_pos(enemy_block):
         enemy_Y %= SCREEN_HEIGHT
     return (enemy_X, enemy_Y)
 
-def is_collision_detected(player_block, enemy_block, BLOCK_SIZE):
+def is_detected_collision_with_enemies(player, enemy_army):
+    for enemy in enemy_army:
+        if is_detected_collision_with_enemy(player, enemy, RECT_SIDE):
+            return True
+        
+    return False
+
+def is_detected_collision_with_enemy(player_block, enemy_block, BLOCK_SIZE):
     player_X = player_block[0]
     enemy_X = enemy_block[0]
 
@@ -73,12 +84,12 @@ def is_collision_detected(player_block, enemy_block, BLOCK_SIZE):
         if (enemy_Y > player_Y - BLOCK_SIZE) and (enemy_Y < player_Y + BLOCK_SIZE):
             print("Collison detected. Enemy:", enemy_block, "Player:", player_block)
             return True
-    
+    # endif
+
     return False
 
 # Generate multiple enemies
 generate_enemies(enemies, ENMY_COUNT)
-
 x_delta = y_delta = 0
 
 while not IS_GAME_OVER:
@@ -129,20 +140,16 @@ while not IS_GAME_OVER:
         ENMY_RECTANGLE = pygame.Rect(enmy_rect_pos, RECT_SIZE)
         pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
     
-    for enmy_rect_pos in enemies:
-        if is_collision_detected(rect_pos, enmy_rect_pos, RECT_SIDE):
-            print("GAME OVER!")
-            IS_GAME_OVER = True
-            break
+    if is_detected_collision_with_enemies(rect_pos, enemies):
+        print("GAME OVER!")
+        IS_GAME_OVER = True
 
     # Refresh the screen
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
     # Re-Compute Enemy rectangle
-    for indx in range(0, len(enemies)):
-        print("Enemy[", indx, "] = ", enemies[indx])
-        enemies[indx] = update_enemy_pos(enemies[indx]) 
+    update_all_enemies(enemies)
 
 #end while
 sys.exit()
