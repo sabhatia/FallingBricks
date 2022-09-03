@@ -78,13 +78,16 @@ while not IS_GAME_OVER:
 
     # Compute Enemy rectangle 
     enmy_y += ENMY_DROP_RATE
-    enmy_y %= SCREEN_HEIGHT
+    if enmy_y >= SCREEN_HEIGHT:
+        # move the enemy to a new horizontal position
+        enmy_x = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
+        enmy_y %= SCREEN_HEIGHT
     enmy_rect_pos = (enmy_x, enmy_y)
     screen.fill((0,0,0))
 
     # Print debugs
     print('Player:', rect_pos)
-    print('Enemy:', enmy_rect_pos)
+    print('Enemy :', enmy_rect_pos)
 
     # Draw the rectangles
     PLAYER_RECTANGLE = pygame.Rect(rect_pos, RECT_SIZE)
