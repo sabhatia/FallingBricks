@@ -40,6 +40,7 @@ enemy_ship = [ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y]
 enmy_x = enemy_ship[0]
 enmy_y = enemy_ship[1]
 enemies = list()
+score = 0
 
 # Clock
 clock = pygame.time.Clock()
@@ -55,13 +56,15 @@ def generate_enemies(enemy_army: list, total_enemies: int):
         enemy_Y = ENMY_RECT_INIT_Y
         enemy_army.append([enemy_X, enemy_Y])
 
-def update_all_enemies(enemy_army):
+def update_all_enemies(enemy_army, dodged_so_far):
     for indx, enemy_ship in enumerate(enemy_army):
         if enemy_ship[1] >= SCREEN_HEIGHT:
             enemy_army.pop(indx)
-            print("Removed Enemy Ship[", indx, "]")
+            dodged_so_far += 1
         else:
             enemy_ship[1] += ENMY_DROP_RATE
+
+    return (dodged_so_far)
 
 def is_detected_collision_with_enemies(player, enemy_army):
     for enemy in enemy_army:
@@ -85,9 +88,37 @@ def is_detected_collision_with_enemy(player_block, enemy_block, BLOCK_SIZE):
 
     return False
 
+def move_player_ship(player_ship):
+    x_delta = y_delta = 0
+    STEP_SIZE = 25
+
+    if game_event.type == pygame.KEYDOWN:
+
+        print("KEY PRESSED")
+        if game_event.key == pygame.K_LEFT:
+            print('KEY: Left')
+            x_delta -= STEP_SIZE
+
+        elif game_event.key == pygame.K_RIGHT:
+            print("KEY: Right")
+            x_delta += STEP_SIZE 
+
+        elif game_event.key == pygame.K_DOWN: 
+            print("KEY: Right")
+            y_delta += STEP_SIZE 
+        
+        elif game_event.key == pygame.K_UP:
+            print("KEY: Right")
+            y_delta -= STEP_SIZE 
+
+        # Compute the new rect co-ordinates
+        player_ship[0] += x_delta
+        player_ship[1] += y_delta
+
+    # end-def
+
 # Generate multiple enemies
 generate_enemies(enemies, ENMY_COUNT)
-x_delta = y_delta = 0
 
 while not IS_GAME_OVER:
     for game_event in pygame.event.get():
@@ -96,6 +127,8 @@ while not IS_GAME_OVER:
         if game_event == pygame.QUIT:
             sys.exit()
 
+        move_player_ship(player_ship)
+        '''
         if game_event.type == pygame.KEYDOWN:
             print("KEY PRESSED")
             if game_event.key == pygame.K_LEFT:
@@ -122,6 +155,7 @@ while not IS_GAME_OVER:
             x += x_delta
             y += y_delta
             player_ship = [x, y]
+            '''
 
     screen.fill((0,0,0))
 
@@ -146,8 +180,9 @@ while not IS_GAME_OVER:
     pygame.display.update()
 
     # Re-Compute Enemy rectangle
-    update_all_enemies(enemies)
+    score = update_all_enemies(enemies, score)
     generate_enemies(enemies, ENMY_COUNT)
+    print("Player Score = ", score)
 
 #end while
 sys.exit()
