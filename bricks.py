@@ -120,66 +120,42 @@ def move_player_ship(player_ship):
 # Generate multiple enemies
 generate_enemies(enemies, ENMY_COUNT)
 
+# Main gaming loop
 while not IS_GAME_OVER:
-    for game_event in pygame.event.get():
 
+    # 1. Determine the player's move
+    for game_event in pygame.event.get():
         # Process key events
         if game_event == pygame.QUIT:
             sys.exit()
-
         move_player_ship(player_ship)
-        '''
-        if game_event.type == pygame.KEYDOWN:
-            print("KEY PRESSED")
-            if game_event.key == pygame.K_LEFT:
-                print('KEY: Left')
-                x_delta = y_delta = 0
-                x_delta -= STEP_SIZE
-
-            elif game_event.key == pygame.K_RIGHT:
-                print("KEY: Right")
-                x_delta = y_delta = 0
-                x_delta += STEP_SIZE 
-
-            elif game_event.key == pygame.K_DOWN: 
-                print("KEY: Right")
-                x_delta = y_delta = 0
-                y_delta += STEP_SIZE 
-            
-            elif game_event.key == pygame.K_UP:
-                print("KEY: Right")
-                x_delta = y_delta = 0
-                y_delta -= STEP_SIZE 
-
-            # Compute the new rect co-ordinates
-            x += x_delta
-            y += y_delta
-            player_ship = [x, y]
-            '''
-
+ 
+    # 2. Set the canvas
     screen.fill((0,0,0))
 
     # Print debugs
     print('Player:', player_ship)
     print('Enemy :', enemy_ship)
 
-    # Draw the rectangles
+    # 3. Draw the player's ship
     PLAYER_RECTANGLE = pygame.Rect(player_ship, RECT_SIZE)
     pygame.draw.rect(screen, COLOR_RED, PLAYER_RECTANGLE)
 
+    # 4. Draw the enemies ships
     for enemy_ship in enemies:
         ENMY_RECTANGLE = pygame.Rect(enemy_ship, RECT_SIZE)
         pygame.draw.rect(screen, COLOR_BLUE, ENMY_RECTANGLE)
     
+    # 5. Check for any collisions
     if is_detected_collision_with_enemies(player_ship, enemies):
         print("GAME OVER!")
         IS_GAME_OVER = True
 
-    # Refresh the screen
+    # 6. Paint the frame
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
-    # Re-Compute Enemy rectangle
+    # 7. Re-Compute Enemy ship positions
     score = update_all_enemies(enemies, score)
     generate_enemies(enemies, ENMY_COUNT)
     print("Player Score = ", score)
