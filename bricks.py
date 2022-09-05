@@ -21,7 +21,11 @@ IS_GAME_OVER = False
 # Common Constats: Player and Enemy
 RECT_SIDE = 50
 RECT_SIZE = (RECT_SIDE, RECT_SIDE)
-STEP_SIZE = RECT_SIDE//2
+STEP_SIZE_LEVEL_1 = 5
+STEP_SIZE_LEVEL_2 = 10
+STEP_SIZE_LEVEL_3 = 15
+STEP_SIZE_LEVEL_MAX = 20
+PLAYER_STEP_SIZE = RECT_SIDE // 2
 
 # Player Rectangle:
 RECT_INIT_X = RECT_INIT_Y = 400
@@ -29,8 +33,8 @@ RECT_INIT_X = RECT_INIT_Y = 400
 # Enemy Rectangle
 ENMY_RECT_INIT_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
 ENMY_RECT_INIT_Y = 0
-ENMY_DROP_RATE = 10
-ENMY_COUNT = 5
+ENMY_DROP_RATE = STEP_SIZE_LEVEL_1
+ENMY_COUNT = 10
 
 # Player Rectangle
 player_ship = [RECT_INIT_X, RECT_INIT_Y]
@@ -45,7 +49,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Falling Bricks')
 
 # Details for the score
-score_font = pygame.font.SysFont('googlesans', 35)
+score_font = pygame.font.SysFont('googlesans', 20)
 score = 0
 
 def generate_enemies(enemy_army: list, total_enemies: int):
@@ -97,25 +101,45 @@ def move_player_ship(player_ship):
         print("KEY PRESSED")
         if game_event.key == pygame.K_LEFT:
             print('KEY: Left')
-            x_delta -= STEP_SIZE
+            x_delta -= PLAYER_STEP_SIZE
 
         elif game_event.key == pygame.K_RIGHT:
             print("KEY: Right")
-            x_delta += STEP_SIZE 
+            x_delta += PLAYER_STEP_SIZE 
 
         elif game_event.key == pygame.K_DOWN: 
             print("KEY: Right")
-            y_delta += STEP_SIZE 
+            y_delta += PLAYER_STEP_SIZE 
         
         elif game_event.key == pygame.K_UP:
             print("KEY: Right")
-            y_delta -= STEP_SIZE 
+            y_delta -= PLAYER_STEP_SIZE 
 
         # Compute the new rect co-ordinates
         player_ship[0] += x_delta
         player_ship[1] += y_delta
+    # end if
 
-    # end-def
+def set_step_size(score):
+    if score < 10:
+        return STEP_SIZE_LEVEL_1
+    elif score < 25:
+        return STEP_SIZE_LEVEL_2
+    elif score < 50:
+        return STEP_SIZE_LEVEL_3
+    else:
+        return STEP_SIZE_LEVEL_MAX
+
+def get_level(score):
+    if score < 10:
+        return '1'
+    elif score < 25:
+        return '2'
+    elif score < 50:
+        return '3'
+    else:
+        return '4 (Max)'
+
 
 # Main gaming loop
 while not IS_GAME_OVER:
@@ -153,13 +177,16 @@ while not IS_GAME_OVER:
         print("GAME OVER!")
         IS_GAME_OVER = True
 
-    # 7. Re-Compute Enemy ship positions
+    # 6. Re-Compute Enemy ship positions
     score = update_all_enemies(enemies, score)
-    score_text = "Score : " + str(score)
+    score_text = "Level: " + get_level(score) + " Score : " + str(score)
     score_label = score_font.render(score_text, True, COLOR_GREEN, COLOR_BLUE)
     screen.blit(score_label, (0,0))
 
-    # 6. Paint the frame
+    # 7. Update the levels
+    ENMY_DROP_RATE = set_step_size(score)
+
+    # 8. Paint the frame
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
