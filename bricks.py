@@ -13,6 +13,8 @@ FRAME_RATE = 30
 
 COLOR_RED = (255,0,0)
 COLOR_BLUE = (0,0,255)
+COLOR_YELLOW = (255, 255, 0)
+COLOR_GREEN = (0,255,0)
 
 IS_GAME_OVER = False
 
@@ -32,19 +34,19 @@ ENMY_COUNT = 5
 
 # Player Rectangle
 player_ship = [RECT_INIT_X, RECT_INIT_Y]
-x = player_ship[0]
-y = player_ship[1]
 
 # Enemy Rectangle
 enemy_ship = [ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y]
-enmy_x = enemy_ship[0]
-enmy_y = enemy_ship[1]
 enemies = list()
-score = 0
 
 # Clock
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption('Falling Bricks')
+
+# Details for the score
+score_font = pygame.font.SysFont('googlesans', 35)
+score = 0
 
 def generate_enemies(enemy_army: list, total_enemies: int):
     debris_probability = random.random()
@@ -90,10 +92,8 @@ def is_detected_collision_with_enemy(player_block, enemy_block, BLOCK_SIZE):
 
 def move_player_ship(player_ship):
     x_delta = y_delta = 0
-    STEP_SIZE = 25
 
     if game_event.type == pygame.KEYDOWN:
-
         print("KEY PRESSED")
         if game_event.key == pygame.K_LEFT:
             print('KEY: Left')
@@ -117,17 +117,19 @@ def move_player_ship(player_ship):
 
     # end-def
 
-# Generate multiple enemies
-generate_enemies(enemies, ENMY_COUNT)
-
 # Main gaming loop
 while not IS_GAME_OVER:
 
+    # Generate multiple enemies
+    generate_enemies(enemies, ENMY_COUNT)
+
     # 1. Determine the player's move
     for game_event in pygame.event.get():
-        # Process key events
+        # 1.1 Process Quit events
         if game_event == pygame.QUIT:
-            sys.exit()
+            quit()
+        
+        # 1.2 Process any other arrow keys
         move_player_ship(player_ship)
  
     # 2. Set the canvas
@@ -151,14 +153,15 @@ while not IS_GAME_OVER:
         print("GAME OVER!")
         IS_GAME_OVER = True
 
+    # 7. Re-Compute Enemy ship positions
+    score = update_all_enemies(enemies, score)
+    score_text = "Score : " + str(score)
+    score_label = score_font.render(score_text, True, COLOR_GREEN, COLOR_BLUE)
+    screen.blit(score_label, (0,0))
+
     # 6. Paint the frame
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
-    # 7. Re-Compute Enemy ship positions
-    score = update_all_enemies(enemies, score)
-    generate_enemies(enemies, ENMY_COUNT)
-    print("Player Score = ", score)
-
 #end while
-sys.exit()
+quit()
