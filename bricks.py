@@ -112,8 +112,13 @@ def move_player_ship(player_ship):
             y_delta -= PLAYER_STEP_SIZE 
 
         # Compute the new rect co-ordinates
-        player_ship[0] += x_delta
-        player_ship[1] += y_delta
+        new_X = player_ship[0] + x_delta
+        new_Y = player_ship[1] + y_delta
+        if new_X >= 0 and new_X <= SCREEN_WIDTH - RECT_SIDE:
+            player_ship[0] = new_X
+        if new_Y >= 0 and new_Y <= SCREEN_HEIGHT - RECT_SIDE:
+            player_ship[1] = new_Y
+
     # end if
 
 def set_step_size(score):
