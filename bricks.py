@@ -28,8 +28,6 @@ PLAYER_STEP_SIZE = RECT_SIDE // 2
 RECT_INIT_X = RECT_INIT_Y = 400
 
 # Enemy Rectangle
-ENMY_RECT_INIT_X = random.randint(0, 800)
-ENMY_RECT_INIT_Y = 0
 ENMY_DROP_RATE = STEP_SIZE_LEVEL_1
 ENMY_COUNT = 10
 
@@ -55,16 +53,16 @@ def generate_enemies(enemy_army: list, total_enemies: int):
 
     if len(enemy_army) < total_enemies:
         enemy_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
-        enemy_Y = ENMY_RECT_INIT_Y
+        enemy_Y = 0
         enemy_army.append([enemy_X, enemy_Y])
 
-def update_all_enemies(enemy_army, dodged_so_far):
+def update_all_enemies(enemy_army, dodged_so_far, drop_rate):
     for indx, enemy_ship in enumerate(enemy_army):
         if enemy_ship[1] >= SCREEN_HEIGHT:
             enemy_army.pop(indx)
             dodged_so_far += 1
         else:
-            enemy_ship[1] += ENMY_DROP_RATE
+            enemy_ship[1] += drop_rate
 
     return (dodged_so_far)
 
@@ -121,7 +119,7 @@ def move_player_ship(player_ship):
 
     # end if
 
-def set_step_size(score):
+def get_step_size(score):
     if score < 10:
         return STEP_SIZE_LEVEL_1
     elif score < 25:
@@ -178,17 +176,20 @@ while not IS_GAME_OVER:
         IS_GAME_OVER = True
 
     # 6. Re-Compute Enemy ship positions
-    score = update_all_enemies(enemies, score)
+    score = update_all_enemies(enemies, score, get_step_size(score))
     score_text = "Level: " + get_level(score) + " Score : " + str(score)
     score_label = score_font.render(score_text, True, COLOR_GREEN, COLOR_BLUE)
     screen.blit(score_label, (0,0))
 
     # 7. Update the levels
-    ENMY_DROP_RATE = set_step_size(score)
+    ENMY_DROP_RATE = get_step_size(score)
 
     # 8. Paint the frame
     clock.tick(FRAME_RATE)
     pygame.display.update()
 
 #end while
+
+# Print final parameters
+print('Level: ' + get_level(score) + ', Score: ' + str(score))
 quit()
