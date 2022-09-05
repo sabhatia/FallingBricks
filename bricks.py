@@ -28,7 +28,7 @@ PLAYER_STEP_SIZE = RECT_SIDE // 2
 RECT_INIT_X = RECT_INIT_Y = 400
 
 # Enemy Rectangle
-ENMY_RECT_INIT_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
+ENMY_RECT_INIT_X = random.randint(0, 800)
 ENMY_RECT_INIT_Y = 0
 ENMY_DROP_RATE = STEP_SIZE_LEVEL_1
 ENMY_COUNT = 10
@@ -37,7 +37,6 @@ ENMY_COUNT = 10
 player_ship = [RECT_INIT_X, RECT_INIT_Y]
 
 # Enemy Rectangle
-enemy_ship = [ENMY_RECT_INIT_X, ENMY_RECT_INIT_Y]
 enemies = list()
 
 # Clock
@@ -55,7 +54,7 @@ def generate_enemies(enemy_army: list, total_enemies: int):
         return
 
     if len(enemy_army) < total_enemies:
-        enemy_X = random.randint(0, SCREEN_HEIGHT - RECT_SIDE)
+        enemy_X = random.randint(0, SCREEN_WIDTH - RECT_SIDE)
         enemy_Y = ENMY_RECT_INIT_Y
         enemy_army.append([enemy_X, enemy_Y])
 
@@ -158,7 +157,6 @@ while not IS_GAME_OVER:
 
     # Print debugs
     print('Player:', player_ship)
-    print('Enemy :', enemy_ship)
 
     # 3. Draw the player's ship
     PLAYER_RECTANGLE = pygame.Rect(player_ship, RECT_SIZE)
