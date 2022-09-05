@@ -1,7 +1,4 @@
-from cmath import rect
-from re import L, T
 import pygame
-import sys
 import random
 
 pygame.init()
