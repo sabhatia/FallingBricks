@@ -21,7 +21,8 @@ RECT_SIZE = (RECT_SIDE, RECT_SIDE)
 STEP_SIZE_LEVEL_1 = 5
 STEP_SIZE_LEVEL_2 = 10
 STEP_SIZE_LEVEL_3 = 15
-STEP_SIZE_LEVEL_MAX = 20
+STEP_SIZE_LEVEL_4 = 20
+STEP_SIZE_LEVEL_MAX = 25
 PLAYER_STEP_SIZE = RECT_SIDE // 2
 
 # Player Rectangle:
@@ -40,7 +41,7 @@ enemies = list()
 # Clock
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Falling Bricks')
+pygame.display.set_caption('Dodge of Doom')
 
 # Details for the score
 score_font = pygame.font.SysFont('googlesans', 20)
@@ -126,6 +127,8 @@ def get_step_size(score):
         return STEP_SIZE_LEVEL_2
     elif score < 50:
         return STEP_SIZE_LEVEL_3
+    elif score < 75:
+        return STEP_SIZE_LEVEL_4
     else:
         return STEP_SIZE_LEVEL_MAX
 
@@ -136,8 +139,10 @@ def get_level(score):
         return '2'
     elif score < 50:
         return '3'
+    elif score < 75:
+        return '4'
     else:
-        return '4 (Max)'
+        return '5 (Max)'
 
 
 # Main gaming loop
